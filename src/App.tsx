@@ -24,13 +24,13 @@ const App = () => {
   const [wallet, setWallet] = useState<any>(null);
   const [userAddress, setUserAddress] = useState<string>("");
   const [userBalance, setUserBalance] = useState<number>(0);
-  const [storage, setStorage] = useState<number>(0);
+  const [storage, setStorage] = useState<any>({});
   const [copiedPublicToken, setCopiedPublicToken] = useState<boolean>(false);
   const [beaconConnection, setBeaconConnection] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("transfer");
 
   // Ghostnet Increment/Decrement contract
-  const contractAddress: string = "KT1QMGSLynvwwSfGbaiJ8gzWHibTCweCGcu8";
+  const contractAddress: string = "KT1NcfiZqFCiosbVYudA2pwuLUMPyqNKiYKo";
 
   const generateQrCode = (): { __html: string } => {
     const qr = qrcode(0, "L");
@@ -99,14 +99,14 @@ const App = () => {
             className={activeTab === "transfer" ? "active" : ""}
             onClick={() => setActiveTab("transfer")}
           >
-            Make a transfer
+            Transfer NFT
           </div>
           <div
             id="contract"
             className={activeTab === "contract" ? "active" : ""}
             onClick={() => setActiveTab("contract")}
           >
-            Interact with a contract
+            Interact with NFT contract
           </div>
         </div>
         <div id="dialog">
@@ -118,18 +118,23 @@ const App = () => {
                   Tezos={Tezos}
                   setUserBalance={setUserBalance}
                   userAddress={userAddress}
+                  contractAddress={contractAddress}
                 />
               </div>
             ) : (
               <div id="increment-decrement">
                 <h3 className="text-align-center">
-                  Current counter: <span>{storage}</span>
+                  Current storage
                 </h3>
+                <p>
+                  {JSON.stringify(storage, null, 1)}
+                </p>
                 <UpdateContract
                   contract={contract}
                   setUserBalance={setUserBalance}
                   Tezos={Tezos}
                   userAddress={userAddress}
+                  storage={storage}
                   setStorage={setStorage}
                 />
               </div>

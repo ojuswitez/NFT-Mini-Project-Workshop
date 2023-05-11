@@ -4,26 +4,34 @@ import { TezosToolkit } from "@taquito/taquito";
 const Transfers = ({
   Tezos,
   setUserBalance,
-  userAddress
+  userAddress,
+  contractAddress
 }: {
   Tezos: TezosToolkit;
   setUserBalance: Dispatch<SetStateAction<number>>;
   userAddress: string;
+  contractAddress: string;
 }): JSX.Element => {
   const [recipient, setRecipient] = useState<string>("");
-  const [amount, setAmount] = useState<string>("");
+  const [tokenId, setTokenId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   const sendTransfer = async (): Promise<void> => {
-    if (recipient && amount) {
+    if (recipient && tokenId) {
       setLoading(true);
       try {
-        const op = await Tezos.wallet
-          .transfer({ to: recipient, amount: parseInt(amount) })
-          .send();
+        const contract = await Tezos.contract.at(contractAddress);
+        const op = await contract.methodsObject.transfer({
+          from_: userAddress,
+          txs: [{
+            to_: recipient,
+            token_id: parseInt(tokenId),
+            amount: 1
+          }]
+        }).send();
         await op.confirmation();
         setRecipient("");
-        setAmount("");
+        setTokenId("");
         const balance = await Tezos.tz.getBalance(userAddress);
         setUserBalance(balance.toNumber());
       } catch (error) {
@@ -44,13 +52,13 @@ const Transfers = ({
       />
       <input
         type="number"
-        placeholder="Amount"
-        value={amount}
-        onChange={e => setAmount(e.target.value)}
+        placeholder="TokenID"
+        value={tokenId}
+        onChange={e => setTokenId(e.target.value)}
       />
       <button
         className="button"
-        disabled={!recipient && !amount}
+        disabled={!recipient && !tokenId}
         onClick={sendTransfer}
       >
         {loading ? (

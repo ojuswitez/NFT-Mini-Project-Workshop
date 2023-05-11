@@ -13,7 +13,7 @@ type ButtonProps = {
   setWallet: Dispatch<SetStateAction<any>>;
   setUserAddress: Dispatch<SetStateAction<string>>;
   setUserBalance: Dispatch<SetStateAction<number>>;
-  setStorage: Dispatch<SetStateAction<number>>;
+  setStorage: Dispatch<SetStateAction<any>>;
   contractAddress: string;
   setBeaconConnection: Dispatch<SetStateAction<boolean>>;
   setPublicToken: Dispatch<SetStateAction<string | null>>;
@@ -41,7 +41,7 @@ const ConnectButton = ({
     const contract = await Tezos.wallet.at(contractAddress);
     const storage: any = await contract.storage();
     setContract(contract);
-    setStorage(storage.toNumber());
+    setStorage(storage);
   };
 
   const connectWallet = async (): Promise<void> => {
@@ -65,7 +65,7 @@ const ConnectButton = ({
     (async () => {
       // creates a wallet instance
       const wallet = new BeaconWallet({
-        name: "Taquito React template",
+        name: "Sample NFT dApp",
         preferredNetwork: NetworkType.GHOSTNET,
         disableDefaultEvents: true, // Disable all events / UI. This also disables the pairing alert.
         eventHandlers: {
